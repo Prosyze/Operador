@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist - Operador de Áudio e Vídeo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.9em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 0.95em;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .timing {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            padding: 14px 18px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            font-size: 0.9em;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .timing strong {
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .icon {
+            font-size: 2em;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        h2 {
+            color: #1e293b;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .checklist-item:hover {
+            transform: translateX(4px);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .checklist-item:active {
+            transform: scale(0.98);
+        }
+
+        .checklist-item.checked {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: #22c55e;
+        }
+
+        .checkbox {
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border: 2.5px solid #64748b;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .checklist-item.checked .checkbox {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-color: #16a34a;
+            transform: rotate(360deg);
+        }
+
+        .checklist-item.checked .checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .checklist-item.checked label {
+            text-decoration: line-through;
+            opacity: 0.65;
+            color: #059669;
+        }
+
+        label {
+            cursor: pointer;
+            line-height: 1.6;
+            color: #334155;
+            flex: 1;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1em;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.3px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+                padding-bottom: 100px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .subtitle {
+                font-size: 0.85em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            label {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Checklist - Áudio e Vídeo</h1>
+            <p class="subtitle">Reuniões Híbridas - Salão do Reino</p>
+            <div class="timing">
+                <strong>⏰ Horário de Chegada:</strong> 30 minutos antes da reunião
+            </div>
+        </header>
+
+        <!-- ANTES DA REUNIÃO -->
+        <div class="section">
+            <div class="section-header">
+                <span class="icon">🔧</span>
+                <h2>Antes da Reunião</h2>
+            </div>
+            <ul class="checklist" id="antes">
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Higienizar microfones e superfícies dos equipamentos</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Testar todos os microfones</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Verificar baterias dos microfones sem fio</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Verificar com irmãos quais microfones serão usados</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Colocar cânticos de fundo</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Abrir JW Library e Zoom</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Baixar todas as mídias no JW Library</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Iniciar videoconferência no Zoom</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Colocar janela "Zoom" nos monitores do palco (tela cheia)</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Colocar janela "Zoom Reunião" no monitor do computador</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Verificar conexões de áudio (computador ↔ mesa de som)</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Verificar se câmera correta está selecionada e funcionando</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Começar transmissão do palco antes da reunião</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Verificar se participantes Zoom estão conectados (25 min antes)</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Testar enquadramento e microfone de cada participante Zoom</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label><strong>1 minuto antes:</strong> Fechar microfone de todos no Zoom</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Desmarcar "Permitir que participantes ativem seu próprio som"</label>
+                </li>
+            </ul>
+        </div>
+
+        <!-- DURANTE A REUNIÃO -->
+        <div class="section">
+            <div class="section-header">
+                <span class="icon">▶️</span>
+                <h2>Durante a Reunião</h2>
+            </div>
+            <ul class="checklist" id="durante">
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Operar mesa de som durante toda a reunião</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Operar computador durante toda a reunião</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Reproduzir mídias usando JW Library</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Transmitir mídias para Zoom ("Compartilhar tela")</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Em vídeos: marcar "Compartilhar som" e "Otimizar para videoclipe"</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Mostrar participantes Zoom nos monitores (apenas partes designadas)</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Ativar som dos participantes Zoom nas partes designadas</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Destacar tela de quem faz discurso ou parte com participação</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Ativar som de comentários pelo Zoom (SEM mostrar nos monitores)</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Monitorar qualidade de áudio e vídeo</label>
+                </li>
+            </ul>
+        </div>
+
+        <!-- DEPOIS DA REUNIÃO -->
+        <div class="section">
+            <div class="section-header">
+                <span class="icon">✅</span>
+                <h2>Depois da Reunião</h2>
+            </div>
+            <ul class="checklist" id="depois">
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Fechar câmera do Salão do Reino no Zoom</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Permanecer conectado até horário determinado pelos anciãos</label>
+                </li>
+                <li class="checklist-item">
+                    <div class="checkbox"></div>
+                    <label>Higienizar microfones e superfícies dos equipamentos</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-text">PROGRESSO GERAL</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress">0%</div>
+        </div>
+        <button class="reset-btn" onclick="resetAll()">🔄 Resetar Tudo</button>
+    </div>
+
+    <script>
+        function saveState() {
+            const checked = [];
+            document.querySelectorAll('.checklist-item.checked').forEach(item => {
+                const label = item.querySelector('label').textContent;
+                checked.push(label);
+            });
+            localStorage.setItem('checklist-state', JSON.stringify(checked));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('checklist-state');
+            if (saved) {
+                const checked = JSON.parse(saved);
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const label = item.querySelector('label').textContent;
+                    if (checked.includes(label)) {
+                        item.classList.add('checked');
+                    }
+                });
+            }
+        }
+
+        function updateProgress() {
+            const allItems = document.querySelectorAll('.checklist-item');
+            const checkedItems = document.querySelectorAll('.checklist-item.checked');
+            const percentage = allItems.length > 0 ? Math.round((checkedItems.length / allItems.length) * 100) : 0;
+            
+            const progressFill = document.getElementById('progress');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '%';
+        }
+
+        function resetAll() {
+            if (confirm('Tem certeza que deseja resetar todo o checklist?')) {
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    item.classList.remove('checked');
+                });
+                localStorage.removeItem('checklist-state');
+                updateProgress();
+            }
+        }
+
+        document.querySelectorAll('.checklist-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                updateProgress();
+                saveState();
+            });
+        });
+
+        loadState();
+        updateProgress();
+    </script>
+</body>
+</html>
